@@ -6,7 +6,7 @@ This repository contains independently runnable Python applications.
 
 | Application | Description | Run |
 | --- | --- | --- |
-| [weather-report](apps/weather-report/README.md) | Fetches weather data and writes a CSV report. | cd apps/weather-report && python main.py |
+| [weather-report](apps/weather-report/README.md) | Fetches weather data and writes a CSV report. | cd apps/weather-report && python3 main.py |
 
 ## Repository layout
 
