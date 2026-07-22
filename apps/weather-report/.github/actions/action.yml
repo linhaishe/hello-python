@@ -1,0 +1,29 @@
+name: Run Weather Report CI
+description: Install dependencies, generate a weather report, and upload it as an artifact.
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: ${{ github.workspace }}/apps/weather-report
+      run: python -m pip install requests
+
+    - name: Generate weather report
+      shell: bash
+      working-directory: ${{ github.workspace }}/apps/weather-report
+      run: python main.py
+
+    - name: Upload weather reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: weather-reports
+        path: apps/weather-report/reports/
+        retention-days: 7
+        if-no-files-found: warn
