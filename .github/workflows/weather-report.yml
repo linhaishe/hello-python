@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out test branch
+        # 切回默认分支后，把这一行删掉，改回默认 checkout 即可。41 42 line
         uses: actions/checkout@v4
         with:
           ref: daily/cicd
