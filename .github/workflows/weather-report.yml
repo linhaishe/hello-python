@@ -2,7 +2,15 @@ name: Weather Report
 
 on:
   push:
-    branches: [daily/cicd]
+    branches: [main, daily/cicd]
+    paths: # 改到匹配目录时才会跑
+      - 'apps/weather-report/**'
+      - '.github/workflows/weather-report.yml'
+  pull_request:
+    branches: [main, daily/cicd]
+    paths:
+      - 'apps/weather-report/**'
+      - '.github/workflows/weather-report.yml'
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
@@ -15,4 +23,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run weather report CI
-        uses: ./apps/weather-report/.github/actions/ci
+        uses: ./apps/weather-report/.github/actions
