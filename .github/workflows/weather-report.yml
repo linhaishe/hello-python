@@ -19,7 +19,7 @@ jobs:
   weather-report-push:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    steps:
+    steps: &weather-report-steps
       - name: Check out repository
         uses: actions/checkout@v4
 
@@ -29,19 +29,16 @@ jobs:
   weather-report-pr:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Run weather report CI
-        uses: ./apps/weather-report/.github/actions
+    steps: *weather-report-steps
 
   weather-report-schedule:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
+      - name: Check out test branch
         uses: actions/checkout@v4
+        with:
+          ref: daily/cicd
 
       - name: Run weather report CI
         uses: ./apps/weather-report/.github/actions

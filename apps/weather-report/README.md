@@ -85,3 +85,18 @@ jobs:
       - name: Run weather report CI
         uses: ./apps/weather-report/.github/actions
 ```
+里面的路径是：
+
+```
+today = datetime.now().strftime("%Y-%m-%d")
+folder = f"./reports/{today}"
+filename = f"{folder}/weather_report.csv"
+```
+
+而你的 action 里设置了：
+
+`working-directory: ${{ github.workspace }}/apps/weather-report`
+所以 `./reports/...` 实际上就是相对于 `apps/weather-report/` 这个目录。
+
+最终落盘位置就是：
+`apps/weather-report/reports/2026-07-22/weather_report.csv`
