@@ -2,42 +2,34 @@ name: Weather Report
 
 on:
   push:
-    branches: [main, daily/cicd]
-    paths: # 改到匹配目录时才会跑
-      - 'apps/weather-report/**'
-      - '.github/workflows/weather-report.yml'
-  pull_request:
-    branches: [main, daily/cicd]
+    branches:
+      - main
+      - daily/cicd
     paths:
-      - 'apps/weather-report/**'
-      - '.github/workflows/weather-report.yml'
-  schedule:
-    - cron: "0 * * * *"
+      - "apps/weather-report/**"
+      - ".github/workflows/weather-report.yml"
+
+  pull_request:
+    branches:
+      - main
+      - daily/cicd
+    paths:
+      - "apps/weather-report/**"
+      - ".github/workflows/weather-report.yml"
+
+  repository_dispatch:
+    types:
+      - cron_trigger
+
   workflow_dispatch:
 
+
 jobs:
-  weather-report-push:
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    steps: &weather-report-steps
-      - name: Check out repository
-        uses: actions/checkout@v4
 
-      - name: Run weather report CI
-        uses: ./apps/weather-report/.github/actions
-
-  weather-report-pr:
-    if: github.event_name == 'pull_request'
+  weather-report:
     runs-on: ubuntu-latest
-    steps: *weather-report-steps
 
-  weather-report-schedule:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
     steps:
-      - name: Check out test branch
-        # 先让定时任务跑测试分支 daily/cicd；等功能合进 main 后，删掉 ref，改回默认分支。
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Run weather report CI
-        uses: ./apps/weather-report/.github/actions
+      - uses: ./apps/weather-report/.github/actions
