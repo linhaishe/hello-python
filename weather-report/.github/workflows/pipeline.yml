@@ -1,6 +1,9 @@
 name: Weather Report
 
 on:
+  push:
+    branches:
+      - "**"
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
