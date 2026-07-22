@@ -1,0 +1,34 @@
+name: Weather Report
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  fetch-weather-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install requests
+
+      - name: Generate weather report
+        run: python main.py
+
+      - name: Upload weather reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weather-reports
+          path: reports/
+          retention-days: 7
+          if-no-files-found: warn
