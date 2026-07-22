@@ -12,7 +12,7 @@ on:
       - 'apps/weather-report/**'
       - '.github/workflows/weather-report.yml'
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
