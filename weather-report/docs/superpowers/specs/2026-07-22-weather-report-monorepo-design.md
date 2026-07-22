@@ -18,6 +18,10 @@ No shared package, package manager workspace, repository write permissions, or g
 ```text
 apps/
   weather-report/
+    .github/
+      actions/
+        ci/
+          action.yml
     api/
     services/
     constants.py
@@ -35,12 +39,14 @@ The repository root is reserved for cross-project documentation, automation, and
 
 ## CI/CD
 
-The workflow at `.github/workflows/weather-report.yml` has two triggers:
+GitHub only discovers triggerable workflows in the repository-root `.github/workflows/` directory. Therefore, `.github/workflows/weather-report.yml` is a small project-specific dispatcher. It has two triggers:
 
 - A `*/15 * * * *` schedule.
 - `workflow_dispatch` for manual runs.
 
-Each run checks out the repository, configures Python 3.11, installs `requests`, and executes `python main.py` with `apps/weather-report` as its working directory. It uploads `apps/weather-report/reports/` as a `weather-reports` artifact retained for seven days. The upload runs with `if: always()` so partial output is retained after a failure.
+After checking out the repository, the dispatcher invokes the local Composite Action at `apps/weather-report/.github/actions/ci/action.yml`. That action owns the weather report CI steps: it configures Python 3.11, installs `requests`, executes `python main.py` with `apps/weather-report` as its working directory, and uploads `apps/weather-report/reports/` as a `weather-reports` artifact retained for seven days. The upload runs with `if: always()` so partial output is retained after a failure.
+
+This keeps each subproject's CI steps beside its source code while reserving root workflow files for the GitHub-required trigger and runner declaration. Composite Actions contain steps only; a subproject that later needs multiple jobs, a job matrix, or an independently configured deployment environment will require its own project-named root workflow file.
 
 The workflow does not add, commit, push, or otherwise write generated files to the repository.
 
