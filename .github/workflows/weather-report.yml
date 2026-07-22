@@ -1,6 +1,8 @@
 name: Weather Report
 
 on:
+  push:
+    branches: [daily/cicd]
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
