@@ -16,7 +16,7 @@ on:
     paths:
       - "apps/weather-report/**"
       - ".github/workflows/weather-report.yml"
-
+  # 关键：允许外部通过 API 触发 repository_dispatch 事件
   repository_dispatch:
     types:
       - cron_trigger

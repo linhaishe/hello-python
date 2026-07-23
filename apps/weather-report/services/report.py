@@ -1,31 +1,54 @@
 import csv
-import os
+import sqlite3
 from datetime import datetime
+from pathlib import Path
 
 
 today = datetime.now().strftime("%Y-%m-%d")
+folder = Path(f"./reports/{today}")
+folder.mkdir(parents=True, exist_ok=True)
 
-folder = f"./reports/{today}"
-
-if not os.path.exists(folder):
-    os.makedirs(folder)
-
-filename = f"{folder}/weather_report.csv"
+csv_filename = folder / "weather_report.csv"
+sqlite_filename = folder / "weather_report.db"
 
 def save_csv(weather_list):
+    if not weather_list:
+        return
 
-    with open(
-        filename,
-        "w",
-        newline="",
-        encoding="utf-8"
-    ) as f:
-
+    with csv_filename.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
             f,
             fieldnames=weather_list[0].keys()
         )
-
         writer.writeheader()
-
         writer.writerows(weather_list)
+
+
+def save_sqlite(weather_list):
+    if not weather_list:
+        return
+
+    with sqlite3.connect(sqlite_filename) as conn:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS weather_reports (
+                city TEXT,
+                temperature REAL,
+                wind_speed REAL,
+                time TEXT
+            )
+            """
+        )
+        conn.execute("DELETE FROM weather_reports")
+        conn.executemany(
+            "INSERT INTO weather_reports (city, temperature, wind_speed, time) VALUES (?, ?, ?, ?)",
+            [
+                (
+                    report.get("city"),
+                    report.get("temperature"),
+                    report.get("wind_speed"),
+                    report.get("time"),
+                )
+                for report in weather_list
+            ],
+        )
