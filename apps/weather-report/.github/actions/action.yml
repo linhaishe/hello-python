@@ -25,7 +25,7 @@ runs:
       run: |
         git config user.name github-actions
         git config user.email actions@github.com
-        git add reports/*/weather_report.db || true
+        git add reports/weather_report.db || true
         git commit -m "update database" || exit 0
         git push
 
