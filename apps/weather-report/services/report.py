@@ -14,12 +14,14 @@ def save_csv(weather_list):
     if not weather_list:
         return
 
-    with csv_filename.open("w", newline="", encoding="utf-8") as f:
+    file_exists = csv_filename.exists()
+    with csv_filename.open("a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
             f,
             fieldnames=weather_list[0].keys()
         )
-        writer.writeheader()
+        if not file_exists or csv_filename.stat().st_size == 0:
+            writer.writeheader()
         writer.writerows(weather_list)
 
 
