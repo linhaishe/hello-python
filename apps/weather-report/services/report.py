@@ -3,9 +3,10 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-
+# 基于脚本目录而不是当前工作目录。
 today = datetime.now().strftime("%Y-%m-%d")
-folder = Path(f"./reports/{today}")
+base_dir = Path(__file__).resolve().parent.parent
+folder = base_dir / "reports" / today
 folder.mkdir(parents=True, exist_ok=True)
 
 csv_filename = folder / "weather_report.csv"
